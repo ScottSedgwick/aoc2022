@@ -1,7 +1,12 @@
 module Main (main) where
 
-import Aoc2022 (someFunc)
-
+import Day01
 
 main :: IO ()
-main = someFunc
+main = do
+    xs <- rawdata
+    let ys = parse xs
+    let x = part1 ys
+    print x
+    let y = part2 ys
+    print y

@@ -1,5 +1,8 @@
 module Main (main) where
 
+import Test.Hspec
+import Tests.Day01
 
 main :: IO ()
-main = putStrLn ("Test suite is not implemented" :: String)
+main = hspec $ do
+    tests
