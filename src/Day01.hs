@@ -8,7 +8,7 @@ datafile = "data/Day01.txt"
 rawdata :: IO String
 rawdata = readFile datafile
 
-parse :: String-> Input
+parse :: String -> Input
 parse xs = map (\x -> read x :: Int) (lines xs)
 
 part1 :: Input -> Int
