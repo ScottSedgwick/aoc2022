@@ -4,7 +4,7 @@ import qualified Data.Text.IO as T
 import qualified Data.Attoparsec.Text as A
 import Test.Hspec
 
-import Tests.Test01
+import Tests.Test02
 
 main :: IO ()
 main = do

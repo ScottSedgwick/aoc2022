@@ -3,7 +3,7 @@ module Main (main) where
 import qualified Data.Text.IO as T
 import qualified Data.Attoparsec.Text as A
 
-import Day01
+import Day02
 
 main :: IO ()
 main = do
