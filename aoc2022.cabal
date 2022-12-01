@@ -23,7 +23,7 @@ common common-options
   build-depends:       base ^>= 4.17.0.0
                      , attoparsec ^>= 0.14.4
                      , text ^>= 2.0.1
-  
+  default-language:    GHC2021
   ghc-options:         -Wall
                        -Wcompat
                        -Widentities
