@@ -1,6 +1,7 @@
 module ParserUtils 
   ( intLine
   , intGroup
+  , prtParserError
   ) where
 
 import Control.Applicative ((<|>))
@@ -17,3 +18,6 @@ intGroup = do
   x <- A.many1 intLine
   A.endOfLine
   pure x
+
+prtParserError :: String -> IO()
+prtParserError s = print ("Parser error: " <> s)

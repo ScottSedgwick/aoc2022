@@ -2,19 +2,17 @@ module Main (main) where
 
 import qualified Data.Text.IO as T
 import qualified Data.Attoparsec.Text as A
+import ParserUtils (prtParserError)
 
 import Day02
 
 main :: IO ()
-main = do
-    xs <- T.readFile datafile
-    case A.parseOnly parser xs of
-        (Left s) -> print s
-        (Right ys) -> do
-            let x = part1 ys
-            putStr "Part One: "
-            print x
-            
-            let y = part2 ys
-            putStr "Part Two: "
-            print y
+main = T.readFile datafile >>= either prtParserError prtResult . A.parseOnly parser
+
+prtResult :: Input -> IO()
+prtResult ys = do
+    putStr "Part One: "
+    print (part1 ys)
+    
+    putStr "Part Two: "
+    print (part2 ys)
