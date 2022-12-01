@@ -2,7 +2,7 @@ module Day02 (Input, datafile, parser, part1, part2) where
 
 import qualified Data.Attoparsec.Text as A
 import Data.List (sort)
-import ParserUtils
+import ParserUtils (intGroup)
 
 type Input = [Int]
 
