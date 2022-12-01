@@ -1,8 +1,8 @@
 module Day02 (Input, datafile, parser, part1, part2) where
 
-import Control.Applicative ((<|>))
 import qualified Data.Attoparsec.Text as A
 import Data.List (sort)
+import ParserUtils
 
 type Input = [[Int]]
 
@@ -10,13 +10,7 @@ datafile :: FilePath
 datafile = "data/Day02.txt"
 
 parser :: A.Parser Input
-parser = A.many1 $ do
-  xs <- A.many1 $ do
-    x <- A.decimal
-    A.endOfLine <|> A.endOfInput
-    pure x
-  A.endOfLine
-  pure xs
+parser = A.many1 intGroup
 
 part1 :: Input -> Int
 part1 = maximum . map sum
