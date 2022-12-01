@@ -1,15 +1,18 @@
-module Day01 (rawdata, parse, part1, part2) where
+module Day01 (datafile, parser, part1, part2) where
+
+import Control.Applicative ((<|>))
+import qualified Data.Attoparsec.Text as A
 
 type Input = [Int]
 
-datafile :: String
+datafile :: FilePath
 datafile = "data/Day01.txt"
 
-rawdata :: IO String
-rawdata = readFile datafile
-
-parse :: String -> Input
-parse xs = map (\x -> read x :: Int) (lines xs)
+parser :: A.Parser Input
+parser = A.many1 $ do
+  x <- A.decimal
+  A.endOfLine <|> A.endOfInput
+  pure x
 
 part1 :: Input -> Int
 part1 (x:y:xs) = (if y > x then 1 else 0) + part1 (y:xs)
