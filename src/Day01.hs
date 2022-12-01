@@ -1,4 +1,4 @@
-module Day01 (datafile, parser, part1, part2) where
+module Day01 (Input, datafile, parser, part1, part2) where
 
 import Control.Applicative ((<|>))
 import qualified Data.Attoparsec.Text as A

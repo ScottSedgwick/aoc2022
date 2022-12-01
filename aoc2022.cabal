@@ -13,16 +13,16 @@ copyright:           2022 Scott Sedgwick
 build-type:          Simple
 extra-doc-files:     README.md
                      CHANGELOG.md
-tested-with:         GHC == 8.10.7
+tested-with:         GHC == 9.4.2
 
 source-repository head
   type:                git
   location:            https://github.com/ssedgwick/aoc2022.git
 
 common common-options
-  build-depends:       base
-                     , attoparsec
-                     , text
+  build-depends:       base ^>= 4.17.0.0
+                     , attoparsec ^>= 0.14.4
+                     , text ^>= 2.0.1
   
   ghc-options:         -Wall
                        -Wcompat
@@ -62,7 +62,7 @@ test-suite aoc2022-test
   main-is:             Spec.hs
   other-modules:       Tests.Test01
   build-depends:       aoc2022
-                     , hspec
+                     , hspec ^>= 2.10.6
   ghc-options:         -threaded
                        -rtsopts
                        -with-rtsopts=-N
