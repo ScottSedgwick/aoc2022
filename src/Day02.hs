@@ -23,15 +23,15 @@ parser = A.many1 $ do
     x <- rpsParser 'A' 'B' 'C'
     _ <- A.char ' '
     y <- rpsParser 'X' 'Y' 'Z'
-    A.endOfLine <|> A.endOfInput
+    _ <- A.endOfLine <|> A.endOfInput
     pure (x,y)
 
 rpsParser :: Char -> Char -> Char -> A.Parser RPS
 rpsParser a b c = do
-    x <- A.char a <|> A.char b <|> A.char c
-    if (x == a) then pure Rock
+    x <- A.satisfy (\y -> y `elem` [a,b,c])
+    if      (x == a) then pure Rock
     else if (x == b) then pure Paper
-    else pure Scissors
+    else                  pure Scissors
 
 part1 :: Input -> Int
 part1 = sum . map score1
@@ -40,20 +40,15 @@ score1 :: (RPS, RPS) -> Int
 score1 (x, y) = winScore (isWin x y) + shapeScore y
 
 shapeScore :: RPS -> Int
-shapeScore Rock = 1
-shapeScore Paper = 2
+shapeScore Rock     = 1
+shapeScore Paper    = 2
 shapeScore Scissors = 3
 
 isWin :: RPS -> RPS -> RPSResult
 isWin Rock     Paper    = Win
-isWin Rock     Scissors = Loss
-isWin Rock     Rock     = Draw
-isWin Scissors Paper    = Loss
-isWin Scissors Scissors = Draw
 isWin Scissors Rock     = Win
-isWin Paper    Paper    = Draw
 isWin Paper    Scissors = Win
-isWin Paper    Rock     = Loss
+isWin a        b        = if (a == b) then Draw else Loss
 
 winScore :: RPSResult -> Int
 winScore Win  = 6
@@ -69,12 +64,13 @@ convert2 Paper    = Draw
 convert2 Scissors = Win
 
 score2 :: (RPS, RPSResult) -> Int
-score2 (Rock,     Loss) = shapeScore Scissors + winScore(Loss)
-score2 (Rock,     Draw) = shapeScore Rock     + winScore(Draw)
-score2 (Rock,     Win)  = shapeScore Paper    + winScore(Win)
-score2 (Paper,    Loss) = shapeScore Rock     + winScore(Loss)
-score2 (Paper,    Draw) = shapeScore Paper    + winScore(Draw)
-score2 (Paper,    Win)  = shapeScore Scissors + winScore(Win)
-score2 (Scissors, Loss) = shapeScore Paper    + winScore(Loss)
-score2 (Scissors, Draw) = shapeScore Scissors + winScore(Draw)
-score2 (Scissors, Win)  = shapeScore Rock     + winScore(Win)
+score2 (a, b) = shapeScore (play2 a b) + winScore b
+
+play2 :: RPS -> RPSResult -> RPS
+play2 Rock     Win  = Paper
+play2 Rock     Loss = Scissors
+play2 Paper    Win  = Scissors
+play2 Paper    Loss = Rock
+play2 Scissors Win  = Rock
+play2 Scissors Loss = Paper
+play2 a        Draw = a
