@@ -4,4 +4,4 @@
 
 Advent of Code is a yearly set of exercises put together by Eric Wastl.
 
-This are my answers for 2022.  They will all be in Haskell.
+These are my answers for 2022.  They will all be in Haskell.

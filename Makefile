@@ -1,5 +1,5 @@
 build: $(wildcard src/*.hs) app/Main.hs aoc2022.cabal  	## Build the application
-	cabal build
+	cabal build --enable-tests
 
 run: build												## Build and Run the application
 	cabal exec aoc2022

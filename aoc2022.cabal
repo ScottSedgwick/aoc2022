@@ -24,6 +24,7 @@ common common-options
                      , attoparsec ^>= 0.14.4
                      , text ^>= 2.0.1
   default-language:    GHC2021
+  default-extensions:  DerivingStrategies
   ghc-options:         -Wall
                        -Wcompat
                        -Widentities
