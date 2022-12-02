@@ -46,6 +46,7 @@ library
   exposed-modules:     ParserUtils
                      , Day01
                      , Day02
+                     , Day03
 
 executable aoc2022
   import:              common-options
@@ -63,6 +64,7 @@ test-suite aoc2022-test
   main-is:             Spec.hs
   other-modules:       Tests.Test01
                      , Tests.Test02
+                     , Tests.Test03
   build-depends:       aoc2022
                      , hspec ^>= 2.10.6
   ghc-options:         -threaded
