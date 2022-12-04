@@ -8,5 +8,5 @@ import Day03 (Input, datafile, parser, part1, part2)
 
 tests :: Input -> Spec
 tests ys = describe "Day 02 tests" $ do
-    it "part1" $ part1 ys `shouldBe` 14375
-    it "part2" $ part2 ys `shouldBe` 10274
+    it "part1" $ part1 ys `shouldBe` 7908
+    it "part2" $ part2 ys `shouldBe` 2838
