@@ -5,7 +5,7 @@ import qualified Data.Attoparsec.Text as A
 import Test.Hspec (hspec)
 import ParserUtils (prtParserError)
 
-import Tests.Test06 (datafile, parser, tests)
+import Tests.Test07 (datafile, parser, tests)
 
 main :: IO ()
 main = T.readFile datafile >>= either prtParserError (hspec . tests) . A.parseOnly parser
