@@ -1,12 +1,19 @@
 module ParserUtils 
-  ( intLine
+  ( eol
+  , intLine
   , intGroup
   , prtParserError
+  , restOfLine
+  , string
   , strLine
   ) where
 
 import Control.Applicative ((<|>))
 import qualified Data.Attoparsec.Text as A
+import qualified Data.Text as T
+
+eol :: A.Parser ()
+eol = A.endOfLine <|> A.endOfInput
 
 intLine :: Integral a => A.Parser a
 intLine = do
@@ -22,6 +29,12 @@ intGroup = do
 
 prtParserError :: String -> IO()
 prtParserError s = print ("Parser error: " <> s)
+
+restOfLine :: A.Parser String
+restOfLine = A.many1 (A.satisfy (/= '\n'))
+
+string :: String -> A.Parser T.Text
+string s = A.string (T.pack s) 
 
 strLine :: A.Parser String
 strLine = do
