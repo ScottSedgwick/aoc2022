@@ -4,7 +4,7 @@ import qualified Data.Text.IO as T
 import qualified Data.Attoparsec.Text as A
 import ParserUtils (prtParserError)
 
-import Day08 (Input, datafile, parser, part1, part2)
+import Day09 (Input, datafile, parser, part1, part2)
 
 main :: IO ()
 main = T.readFile datafile >>= either prtParserError prtResult . A.parseOnly parser
