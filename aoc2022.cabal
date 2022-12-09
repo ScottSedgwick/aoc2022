@@ -23,6 +23,7 @@ common common-options
   build-depends:       base ^>= 4.17.0.0
                      , attoparsec ^>= 0.14.4
                      , containers
+                     , matrix
                      , text ^>= 2.0.1
   default-language:    GHC2021
   default-extensions:  DerivingStrategies
@@ -52,6 +53,7 @@ library
                      , Day05
                      , Day06
                      , Day07
+                     , Day08
 
 executable aoc2022
   import:              common-options
@@ -74,6 +76,7 @@ test-suite aoc2022-test
                      , Tests.Test05
                      , Tests.Test06
                      , Tests.Test07
+                     , Tests.Test08
   build-depends:       aoc2022
                      , hspec ^>= 2.10.6
   ghc-options:         -threaded

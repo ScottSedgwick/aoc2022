@@ -1,5 +1,6 @@
 module ParserUtils 
-  ( eol
+  ( digitLine
+  , eol
   , intLine
   , intGroup
   , prtParserError
@@ -10,6 +11,7 @@ module ParserUtils
 
 import Control.Applicative ((<|>))
 import qualified Data.Attoparsec.Text as A
+import Data.Char (digitToInt)
 import qualified Data.Text as T
 
 eol :: A.Parser ()
@@ -41,3 +43,9 @@ strLine = do
   s <- A.many1 (A.notChar '\n')
   _ <- A.endOfLine <|> A.endOfInput
   pure s
+
+digitLine :: A.Parser [Int]
+digitLine = do
+    xs <- A.many1 A.digit
+    _ <- A.endOfLine <|> A.endOfInput
+    pure $ map digitToInt xs
