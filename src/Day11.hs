@@ -8,16 +8,19 @@ import qualified Data.Text as T
 import Data.List (sort, foldl')
 import ParserUtils ( eol, string )
 
-type Input = M.IntMap Monkey
+data Input = Input
+  { ms :: M.IntMap Monkey
+  , modulus :: Int
+  } deriving stock (Show)
 
 data Monkey = Monkey
   { number :: Int
-  , items :: [Integer]
-  , op :: (Integer -> Integer)
-  , test :: Integer
+  , items :: [Int]
+  , op :: (Int -> Int)
+  , test :: Int
   , onTrue :: Int 
   , onFalse :: Int
-  , inspections :: Integer
+  , inspections :: Int
   } 
 
 instance Show Monkey where
@@ -28,8 +31,10 @@ datafile = "data/Day11.txt"
 
 parser :: A.Parser Input
 parser = do
-    ms <- A.many1 parseMonkey
-    pure $ M.fromList (map (\m -> (number m, m)) ms)
+    xs <- A.many1 parseMonkey
+    let ys = M.fromList (map (\m -> (number m, m)) xs)
+    let z = product (map test xs)
+    pure $ Input { ms = ys, modulus = z }
 
 parseMonkey :: A.Parser Monkey
 parseMonkey = do
@@ -74,31 +79,31 @@ ignore p = do
     _ <- p
     pure ()
 
-parseOper :: A.Parser (Either String Integer)
+parseOper :: A.Parser (Either String Int)
 parseOper = do
     x <- parseOld <|> (Right <$> A.decimal)
     _ <- (ignore (string " ")) <|> A.endOfLine
     pure x
 
-parseOld :: A.Parser (Either String Integer)
+parseOld :: A.Parser (Either String Int)
 parseOld = do
     x <- string "old"
     pure (Left (T.unpack x))
 
-parseOperation :: A.Parser (Integer -> Integer -> Integer)
+parseOperation :: A.Parser (Int -> Int -> Int)
 parseOperation = parseAdd <|> parseMult
 
-parseAdd :: A.Parser (Integer -> Integer -> Integer)
+parseAdd :: A.Parser (Int -> Int -> Int)
 parseAdd = do
     _ <- string "+ "
     pure (+)
 
-parseMult :: A.Parser (Integer -> Integer -> Integer)
+parseMult :: A.Parser (Int -> Int -> Int)
 parseMult = do
     _ <- string "* "
     pure (*)
 
-parseTest :: A.Parser Integer
+parseTest :: A.Parser Int
 parseTest = do
     _ <- string "  Test: divisible by "
     x <- A.decimal
@@ -112,33 +117,30 @@ parseThrow s = do
     _ <- eol
     pure x
 
--- ###########################################################################################################################################
--- 10605
-part1 :: Input -> Integer
+part1 :: Input -> Int
 part1 xs = product $ take 2 zs
   where
-    ys = foldl' (\ws _ -> runAllMonkeys ws (\x -> x `div` 3) (M.keys xs)) xs ([1..20] :: [Int])
-    zs = reverse $ sort $ map (inspections . snd) (M.toList ys)    
+    ys = foldl' (\ws _ -> runAllMonkeys ws (\x -> x `div` 3) (M.keys (ms xs))) xs ([1..20] :: [Int])
+    zs = reverse $ sort $ map (inspections . snd) (M.toList (ms ys))    
 
-runAllMonkeys :: Input -> (Integer -> Integer) -> [Int] -> Input
+runAllMonkeys :: Input -> (Int -> Int) -> [Int] -> Input
 runAllMonkeys xs f ys = foldl' (\b a -> runMonkey a f b) xs ys
 
-runMonkey :: Int -> (Integer -> Integer) -> Input -> Input
-runMonkey n f xs =  M.adjust (const $ m { items = [], inspections = i }) (number m) xs'
+runMonkey :: Int -> (Int -> Int) -> Input -> Input
+runMonkey n f xs =  xs' { ms = M.adjust (const $ m { items = [], inspections = i }) (number m) (ms xs') }
     where
-        m = xs M.! n
-        xs' = foldl' (\b a -> inspect m f b a)  xs (items m)
-        i = inspections m + fromIntegral (length (items m))
+        m = (ms xs) M.! n
+        xs' = foldl' (\b a -> inspect m f b a) xs (items m)
+        i = inspections m + length (items m)
 
-inspect :: Monkey -> (Integer -> Integer) -> Input -> Integer -> Input
-inspect m f xs y | w `mod` (test m) == 0 = M.adjust (\m' -> m' { items = items m' <> [w] }) (onTrue m) xs
-                 | otherwise             = M.adjust (\m' -> m' { items = items m' <> [w] }) (onFalse m) xs
+inspect :: Monkey -> (Int -> Int) -> Input -> Int -> Input
+inspect m f xs y | w `mod` (test m) == 0 = xs { ms = M.adjust (\m' -> m' { items = items m' <> [w] }) (onTrue m)  (ms xs) }
+                 | otherwise             = xs { ms = M.adjust (\m' -> m' { items = items m' <> [w] }) (onFalse m) (ms xs) }
     where
-        w = y `seq` f ((op m) y)
+        w = (f ((op m) y)) `mod` (modulus xs)
 
--- 20 -> 10197
-part2 :: Input -> Integer
+part2 :: Input -> Int
 part2 xs = product $ take 2 zs
   where
-    ys = foldl' (\ws _ -> runAllMonkeys ws id (M.keys xs)) xs ([1..500] :: [Int])
-    zs = reverse $ sort $ map (inspections . snd) (M.toList ys)
+    ys = foldl' (\ws _ -> runAllMonkeys ws id (M.keys (ms xs))) xs ([1..10000] :: [Int])
+    zs = reverse $ sort $ map (inspections . snd) (M.toList (ms ys))

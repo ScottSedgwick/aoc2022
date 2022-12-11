@@ -14,8 +14,8 @@ prtResult ys = do
     putStrLn "Data: "
     print ys
 
-    putStr "Part One: "
+    putStrLn "Part One: "
     print $ part1 ys
     
-    putStr "Part Two: "
+    putStrLn "Part Two: "
     print $ part2 ys
