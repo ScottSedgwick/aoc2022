@@ -23,6 +23,7 @@ common common-options
   build-depends:       base ^>= 4.17.0.0
                      , attoparsec ^>= 0.14.4
                      , containers
+                     , deepseq
                      , matrix
                      , text ^>= 2.0.1
                      , vector
@@ -56,6 +57,8 @@ library
                      , Day07
                      , Day08
                      , Day09
+                     , Day10
+                     , Day11
 
 executable aoc2022
   import:              common-options
@@ -80,6 +83,8 @@ test-suite aoc2022-test
                      , Tests.Test07
                      , Tests.Test08
                      , Tests.Test09
+                     , Tests.Test10
+                     , Tests.Test11
   build-depends:       aoc2022
                      , hspec ^>= 2.10.6
   ghc-options:         -threaded
