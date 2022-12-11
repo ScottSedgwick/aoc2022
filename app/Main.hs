@@ -4,7 +4,7 @@ import qualified Data.Text.IO as T
 import qualified Data.Attoparsec.Text as A
 import ParserUtils (prtParserError)
 
-import Day09 (Input, datafile, parser, part1, part2)
+import Day11 (Input, datafile, parser, part1, part2)
 
 main :: IO ()
 main = T.readFile datafile >>= either prtParserError prtResult . A.parseOnly parser
@@ -14,8 +14,8 @@ prtResult ys = do
     putStrLn "Data: "
     print ys
 
-    putStr "Part One: "
+    putStrLn "Part One: "
     print $ part1 ys
     
-    putStr "Part Two: "
+    putStrLn "Part Two: "
     print $ part2 ys

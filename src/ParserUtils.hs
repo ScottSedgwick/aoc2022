@@ -1,6 +1,7 @@
 module ParserUtils 
   ( digitLine
   , eol
+  , ignore
   , intLine
   , intGroup
   , prtParserError
@@ -14,8 +15,18 @@ import qualified Data.Attoparsec.Text as A
 import Data.Char (digitToInt)
 import qualified Data.Text as T
 
+digitLine :: A.Parser [Int]
+digitLine = do
+    xs <- A.many1 A.digit
+    _ <- A.endOfLine <|> A.endOfInput
+    pure $ map digitToInt xs
+
 eol :: A.Parser ()
 eol = A.endOfLine <|> A.endOfInput
+ignore :: A.Parser a -> A.Parser ()
+ignore p = do
+    _ <- p
+    pure ()
 
 intLine :: Integral a => A.Parser a
 intLine = do
@@ -43,9 +54,3 @@ strLine = do
   s <- A.many1 (A.notChar '\n')
   _ <- A.endOfLine <|> A.endOfInput
   pure s
-
-digitLine :: A.Parser [Int]
-digitLine = do
-    xs <- A.many1 A.digit
-    _ <- A.endOfLine <|> A.endOfInput
-    pure $ map digitToInt xs
