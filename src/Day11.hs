@@ -123,35 +123,28 @@ parseThrow s = do
 part1 :: Input -> Integer
 part1 xs = product $ take 2 zs
   where
-    ys = foldl' (\ys _ -> runAllMonkeys ys (\x -> x `div` 3) (M.keys xs)) xs [1..20]
+    ys = foldl' (\ws _ -> runAllMonkeys ws (\x -> x `div` 3) (M.keys xs)) xs ([1..20] :: [Int])
     zs = reverse $ sort $ map (inspections . snd) (M.toList ys)    
 
 runAllMonkeys :: Input -> (Integer -> Integer) -> [Int] -> Input
 runAllMonkeys xs f ys = foldl' (\b a -> runMonkey a f b) xs ys
 
 runMonkey :: Int -> (Integer -> Integer) -> Input -> Input
-runMonkey n f xs = inspectAll m f xs (items m)
-  where
-    m = xs M.! n
-    
-inspectAll :: Monkey -> (Integer -> Integer) -> Input -> [Integer] -> Input
-inspectAll m f xs ys = M.adjust (const $ m { items = [], inspections = i }) (number m) xs'
+runMonkey n f xs =  M.adjust (const $ m { items = [], inspections = i }) (number m) xs'
     where
-        xs' = foldl' (\b a -> inspect m f b a)  xs ys
+        m = xs M.! n
+        xs' = foldl' (\b a -> inspect m f b a)  xs (items m)
         i = inspections m + fromIntegral (length (items m))
 
 inspect :: Monkey -> (Integer -> Integer) -> Input -> Integer -> Input
-inspect m f xs y | w `mod` (test m) == 0 = throwTo xs (onTrue m) w
-                 | otherwise             = throwTo xs (onFalse m) w
+inspect m f xs y | w `mod` (test m) == 0 = M.adjust (\m' -> m' { items = items m' <> [w] }) (onTrue m) xs
+                 | otherwise             = M.adjust (\m' -> m' { items = items m' <> [w] }) (onFalse m) xs
     where
         w = f ((op m) y)
-
-throwTo :: Input -> Int -> Integer -> Input
-throwTo xs n y = M.adjust (\m -> m { items = items m <> [y]}) n xs
 
 -- 20 -> 10197
 part2 :: Input -> Integer
 part2 xs = product $ take 2 zs
   where
-    ys = foldl' (\ys _ -> runAllMonkeys ys id (M.keys xs)) xs [1..10000]
+    ys = foldl' (\ws _ -> runAllMonkeys ws id (M.keys xs)) xs ([1..10000] :: [Int])
     zs = reverse $ sort $ map (inspections . snd) (M.toList ys)
