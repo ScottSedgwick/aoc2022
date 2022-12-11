@@ -2,10 +2,16 @@
 module Day11 (Input, datafile, parser, part1, part2) where
 
 import Control.Applicative ((<|>))
+<<<<<<< HEAD
+=======
+-- import GHC.Generics
+-- import Control.DeepSeq
+>>>>>>> 6a44ab5 (Day 11 half done)
 import qualified Data.Attoparsec.Text as A
 import qualified Data.IntMap.Strict as M
 import qualified Data.Text as T
 import Data.List (sort, foldl')
+<<<<<<< HEAD
 import ParserUtils ( eol, string )
 
 data Input = Input
@@ -26,15 +32,43 @@ data Monkey = Monkey
 instance Show Monkey where
     show m = "Monkey " <> show (number m) <> ": " <> show (items m) <> "\n"
 
+=======
+import ParserUtils
+
+type Input = M.IntMap Monkey
+
+data Monkey = Monkey
+  { number :: Int
+  , items :: [Integer]
+  , op :: (Integer -> Integer)
+  , test :: Integer
+  , onTrue :: Int 
+  , onFalse :: Int
+  , inspections :: Integer
+  } -- deriving (Generic)
+
+instance Show Monkey where
+    -- show m = "{ Number: " <> show (number m) <> ", items: " <> show (items m) <> ", test: " <> show (test m) <> ", true: " <> show (onTrue m) <> ", false: " <> show (onFalse m) <> ", instepctions: " <> show (inspections m) <> " }"
+    show m = "Monkey " <> show (number m) <> ": " <> show (items m) <> "\n"
+
+-- instance NFData Monkey -- where
+    -- rnf a = a `deepseq` ()
+
+>>>>>>> 6a44ab5 (Day 11 half done)
 datafile :: FilePath
 datafile = "data/Day11.txt"
 
 parser :: A.Parser Input
 parser = do
+<<<<<<< HEAD
     xs <- A.many1 parseMonkey
     let ys = M.fromList (map (\m -> (number m, m)) xs)
     let z = product (map test xs)
     pure $ Input { ms = ys, modulus = z }
+=======
+    ms <- A.many1 parseMonkey
+    pure $ M.fromList (map (\m -> (number m, m)) ms)
+>>>>>>> 6a44ab5 (Day 11 half done)
 
 parseMonkey :: A.Parser Monkey
 parseMonkey = do

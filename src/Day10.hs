@@ -2,10 +2,17 @@ module Day10 (Input, datafile, parser, part1, part2) where
 
 import Control.Applicative ((<|>))
 import qualified Data.Attoparsec.Text as A
+<<<<<<< HEAD
 import Data.List (intercalate)
 import qualified Data.Matrix as M
 import ParserUtils ( eol, string)
 import Debug.Trace ( trace )
+=======
+import qualified Data.Set as S
+import qualified Data.Matrix as M
+import ParserUtils ( eol, string)
+import Debug.Trace
+>>>>>>> 6a44ab5 (Day 11 half done)
 
 type Input = [Maybe Int]
 
