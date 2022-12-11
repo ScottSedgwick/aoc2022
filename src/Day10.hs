@@ -3,6 +3,7 @@ module Day10 (Input, datafile, parser, part1, part2) where
 import Control.Applicative ((<|>))
 import qualified Data.Attoparsec.Text as A
 <<<<<<< HEAD
+<<<<<<< HEAD
 import Data.List (intercalate)
 import qualified Data.Matrix as M
 import ParserUtils ( eol, string)
@@ -13,6 +14,12 @@ import qualified Data.Matrix as M
 import ParserUtils ( eol, string)
 import Debug.Trace
 >>>>>>> 6a44ab5 (Day 11 half done)
+=======
+import Data.List (intercalate)
+import qualified Data.Matrix as M
+import ParserUtils ( eol, string)
+import Debug.Trace ( trace )
+>>>>>>> d0d7fa7 (Completed Day 11.)
 
 type Input = [Maybe Int]
 
