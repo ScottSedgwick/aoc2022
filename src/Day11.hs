@@ -2,13 +2,11 @@
 module Day11 (Input, datafile, parser, part1, part2) where
 
 import Control.Applicative ((<|>))
--- import GHC.Generics
--- import Control.DeepSeq
 import qualified Data.Attoparsec.Text as A
 import qualified Data.IntMap.Strict as M
 import qualified Data.Text as T
 import Data.List (sort, foldl')
-import ParserUtils
+import ParserUtils ( eol, string )
 
 type Input = M.IntMap Monkey
 
@@ -20,14 +18,10 @@ data Monkey = Monkey
   , onTrue :: Int 
   , onFalse :: Int
   , inspections :: Integer
-  } -- deriving (Generic)
+  } 
 
 instance Show Monkey where
-    -- show m = "{ Number: " <> show (number m) <> ", items: " <> show (items m) <> ", test: " <> show (test m) <> ", true: " <> show (onTrue m) <> ", false: " <> show (onFalse m) <> ", instepctions: " <> show (inspections m) <> " }"
     show m = "Monkey " <> show (number m) <> ": " <> show (items m) <> "\n"
-
--- instance NFData Monkey -- where
-    -- rnf a = a `deepseq` ()
 
 datafile :: FilePath
 datafile = "data/Day11.txt"
@@ -140,11 +134,11 @@ inspect :: Monkey -> (Integer -> Integer) -> Input -> Integer -> Input
 inspect m f xs y | w `mod` (test m) == 0 = M.adjust (\m' -> m' { items = items m' <> [w] }) (onTrue m) xs
                  | otherwise             = M.adjust (\m' -> m' { items = items m' <> [w] }) (onFalse m) xs
     where
-        w = f ((op m) y)
+        w = y `seq` f ((op m) y)
 
 -- 20 -> 10197
 part2 :: Input -> Integer
 part2 xs = product $ take 2 zs
   where
-    ys = foldl' (\ws _ -> runAllMonkeys ws id (M.keys xs)) xs ([1..10000] :: [Int])
+    ys = foldl' (\ws _ -> runAllMonkeys ws id (M.keys xs)) xs ([1..500] :: [Int])
     zs = reverse $ sort $ map (inspections . snd) (M.toList ys)
