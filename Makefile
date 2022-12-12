@@ -1,10 +1,10 @@
-build: $(wildcard src/*.hs) app/Main.hs aoc2022.cabal  	## Build the application
-	cabal build --enable-tests
+build:		 				## Build the application
+	cabal build
 
-run: build												## Build and Run the application
+run: build					## Build and Run the application
 	cabal exec aoc2022
 
-test: $(wildcard test/**/*.hs)							## Build and Run the Test Suite
+test: build					## Build and Run the Test Suite
 	cabal test
 
 .DEFAULT_GOAL := help
