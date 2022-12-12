@@ -61,6 +61,7 @@ library
                      , Day10
                      , Day11
                      , Day12
+                     , Day13
 
 executable aoc2022
   import:              common-options
@@ -88,6 +89,7 @@ test-suite aoc2022-test
                      , Tests.Test10
                      , Tests.Test11
                      , Tests.Test12
+                     , Tests.Test13
   build-depends:       aoc2022
                      , hspec ^>= 2.10.6
   ghc-options:         -threaded
