@@ -5,7 +5,7 @@ import qualified Data.Text.IO as T
 import qualified Data.Attoparsec.Text as A
 import ParserUtils (prtParserError)
 
-import Day13 (Input, datafile, parser, part1, part2, printPacket)
+import Day14 (Input, datafile, parser, part1, part2)
 
 main :: IO ()
 main = T.readFile datafile >>= either prtParserError prtResult . A.parseOnly parser
@@ -13,10 +13,7 @@ main = T.readFile datafile >>= either prtParserError prtResult . A.parseOnly par
 prtResult :: Input -> IO()
 prtResult ys = do
     putStrLn "Data: "
-    forM_ ys $ \(a,b) -> do
-                        putStrLn (printPacket a)
-                        putStrLn (printPacket b)
-                        putStrLn ""
+    print ys
 
     putStrLn "Part One: "
     print $ part1 ys
