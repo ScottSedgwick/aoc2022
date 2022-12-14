@@ -65,17 +65,17 @@ parseLine = do
 -- ################################################################################
 
 part1 :: Input -> Int
-part1 = length . filter (==Sand) . M.toList . cells . addSand
+part1 = length . filter (==Sand) . M.toList . cells . addSand moveSand
 
-addSand :: Input -> Input
-addSand = moveSand (500,0)
+addSand :: ((Int, Int) -> Input -> Input) -> Input -> Input
+addSand f = f (500,0)
 
 moveSand :: (Int, Int) -> Input -> Input
 moveSand (x,y) xs | offScreen (x,y)     xs = xs
                   | clear (x,y + 1)     xs = moveSand (x, y + 1) xs
                   | clear (x - 1,y + 1) xs = moveSand (x - 1, y + 1) xs
                   | clear (x + 1,y + 1) xs = moveSand (x + 1, y + 1) xs
-                  | otherwise              = addSand $ xs { cells = insElem (minx xs) Sand (x,y) (cells xs) }
+                  | otherwise              = addSand moveSand $ xs { cells = insElem (minx xs) Sand (x,y) (cells xs) }
 
 offScreen :: (Int, Int) -> Input -> Bool
 offScreen (x,y) xs = x < minx xs || x > maxx xs || y >= M.nrows (cells xs)
@@ -86,10 +86,7 @@ clear p xs = offScreen p xs || getElem (minx xs) p (cells xs) == Air
 -- ################################################################################
 
 part2 :: Input -> Int
-part2 xs = length $ filter (==Sand) $ M.toList (cells zs)
-  where
-    ys = addFloor xs
-    zs = addSand2 ys
+part2 = length . filter (==Sand) . M.toList . cells . addSand moveSand2 . addFloor
 
 addFloor :: Input -> Input
 addFloor xs = xs { cells = M.extendTo Rock (M.nrows m' + 1) (M.ncols m') m' }
@@ -97,12 +94,9 @@ addFloor xs = xs { cells = M.extendTo Rock (M.nrows m' + 1) (M.ncols m') m' }
     m = cells xs
     m' = M.extendTo Air (M.nrows m + 1) (M.ncols m) m
 
-addSand2 :: Input -> Input
-addSand2 xs = moveSand2 (500,0) xs
-
 moveSand2 :: (Int, Int) -> Input -> Input
 moveSand2 (x,y) xs | clear (x,y + 1)     xs = moveSand2 (x, y + 1) xs
                    | clear (x - 1,y + 1) xs = moveSand2 (x - 1, y + 1) xs
                    | clear (x + 1,y + 1) xs = moveSand2 (x + 1, y + 1) xs
                    | x == 500 && y == 0     = xs { cells = insElem (minx xs) Sand (x,y) (cells xs) }
-                   | otherwise              = addSand2 $ xs { cells = insElem (minx xs) Sand (x,y) (cells xs) }
+                   | otherwise              = addSand moveSand2 $ xs { cells = insElem (minx xs) Sand (x,y) (cells xs) }
