@@ -4,7 +4,7 @@ import qualified Text.Trifecta as A
 import Data.Time.Clock (getCurrentTime, diffUTCTime)
 import ParserUtils (prtParserError, pEither)
 
-import Day24 (Input, datafile, parser, part1, part2)
+import Day25 (Input, datafile, parser, part1, part2)
 
 main :: IO ()
 main = readFile datafile >>= pEither prtResult prtParserError . A.parseString parser mempty
@@ -14,11 +14,11 @@ prtResult ys = do
     putStrLn "Data: "
     print ys
 
-    -- st1 <- getCurrentTime
-    -- putStrLn "Part One: "
-    -- print $ part1 ys
-    -- et1 <- getCurrentTime
-    -- putStrLn $ "Time taken: " <> show (diffUTCTime et1 st1) <> " secs."
+    st1 <- getCurrentTime
+    putStrLn "Part One: "
+    print $ part1 ys
+    et1 <- getCurrentTime
+    putStrLn $ "Time taken: " <> show (diffUTCTime et1 st1) <> " secs."
     
     st2 <- getCurrentTime
     putStrLn "Part Two: "
