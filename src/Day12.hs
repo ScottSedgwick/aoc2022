@@ -1,7 +1,7 @@
 module Day12 (Input, datafile, parser, part1, part2) where
 
 import Algorithm.Search ( dijkstra )
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import Data.Char ( ord )
 import qualified Data.Matrix as M
 import Data.List ( elemIndex ) 
@@ -23,7 +23,7 @@ datafile = "data/Day12.txt"
 
 parser :: A.Parser Input
 parser = do
-    xs <- A.many1 strLine
+    xs <- A.many strLine
     let m = M.fromList (length xs) (length (head xs)) (map toHeight $ concat xs)
     let sp = getPos 'S' xs
     let ep = getPos 'E' xs

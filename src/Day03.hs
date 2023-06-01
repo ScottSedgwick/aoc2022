@@ -1,6 +1,6 @@
 module Day03 (Input, datafile, parser, part1, part2) where
 
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import Data.Char ( ord )
 import ParserUtils ( strLine )
 
@@ -10,7 +10,7 @@ datafile :: FilePath
 datafile = "data/Day03.txt"
 
 parser :: A.Parser Input
-parser = A.many1 strLine
+parser = A.many strLine
 
 part1 :: Input -> Int
 part1 = sum . map (getValue . findDup)

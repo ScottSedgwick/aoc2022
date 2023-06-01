@@ -1,7 +1,7 @@
 module Day10 (Input, datafile, parser, part1, part2) where
 
 import Control.Applicative ((<|>))
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import Data.List (intercalate)
 import qualified Data.Matrix as M
 import ParserUtils ( eol, string)
@@ -13,7 +13,7 @@ datafile :: FilePath
 datafile = "data/Day10.txt"
 
 parser :: A.Parser Input
-parser = A.many1 $ do
+parser = A.many $ do
     parseNoop <|> parseNegAddx <|> parsePosAddx
 
 parseNoop :: A.Parser (Maybe Int)
@@ -25,14 +25,14 @@ parseNoop = do
 parsePosAddx :: A.Parser (Maybe Int)
 parsePosAddx = do
     _ <- string "addx "
-    x <- A.decimal
+    x <- fromIntegral <$> A.decimal
     _ <- eol
     pure $ Just x
 
 parseNegAddx :: A.Parser (Maybe Int)
 parseNegAddx = do
     _ <- string "addx -"
-    x <- A.decimal
+    x <- fromIntegral <$> A.decimal
     _ <- eol
     pure $ Just (x * (-1))
 

@@ -1,6 +1,6 @@
 module Day06 (Input, datafile, parser, part1, part2) where
 
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import Data.List (nub)
 import ParserUtils ( strLine )
 

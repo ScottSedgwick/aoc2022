@@ -1,7 +1,6 @@
 module Day02 (Input, datafile, parser, part1, part2) where
 
-import Control.Applicative ((<|>))
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 
 data RPS = Rock 
          | Paper 
@@ -19,11 +18,11 @@ datafile :: FilePath
 datafile = "data/Day02.txt"
 
 parser :: A.Parser Input
-parser = A.many1 $ do
+parser = A.many $ do
     x <- rpsParser 'A' 'B' 'C'
     _ <- A.char ' '
     y <- rpsParser 'X' 'Y' 'Z'
-    _ <- A.endOfLine <|> A.endOfInput
+    _ <- A.restOfLine
     pure (x,y)
 
 rpsParser :: Char -> Char -> Char -> A.Parser RPS

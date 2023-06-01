@@ -1,11 +1,11 @@
 module Main (main) where
 
 import qualified Data.Text.IO as T
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import Test.Hspec (hspec)
-import ParserUtils (prtParserError)
+import ParserUtils (prtParserError, pEither)
 
-import Tests.Test14 (datafile, parser, tests)
+import Tests.Test24 (datafile, parser, tests)
 
 main :: IO ()
-main = T.readFile datafile >>= either prtParserError (hspec . tests) . A.parseOnly parser
+main = readFile datafile >>= pEither (hspec . tests) prtParserError . A.parseString parser mempty

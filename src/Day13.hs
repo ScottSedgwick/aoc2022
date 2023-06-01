@@ -1,7 +1,7 @@
 module Day13 (Input, datafile, parser, part1, part2, printPacket) where
 
 import Control.Applicative ((<|>))
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import Data.List ( findIndex, intercalate, sort )
 import ParserUtils ( eol ) 
 
@@ -36,7 +36,7 @@ printPacket (Packet xs) = "[" <> intercalate "," (map printPacket xs) <> "]"
 -- ################################################################################
 
 parser :: A.Parser Input
-parser = A.many1 $ do
+parser = A.many $ do
     xs <- parsePacket
     _ <- eol
     ys <- parsePacket
@@ -47,7 +47,7 @@ parser = A.many1 $ do
 parsePacket :: A.Parser Packet
 parsePacket = do
     _ <- A.char '['
-    xs <- A.many' $ do
+    xs <- A.many $ do
         xs <- parsePacket <|> parseNumber
         _ <- A.option ',' (A.char ',')
         pure xs
@@ -55,7 +55,7 @@ parsePacket = do
     pure $ Packet xs
 
 parseNumber :: A.Parser Packet
-parseNumber = Value <$> A.decimal
+parseNumber = (Value . fromIntegral) <$> A.decimal
 
 -- ################################################################################
 

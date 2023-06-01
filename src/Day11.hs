@@ -2,7 +2,7 @@
 module Day11 (Input, datafile, parser, part1, part2) where
 
 import Control.Applicative ((<|>))
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import qualified Data.IntMap.Strict as M
 import qualified Data.Text as T
 import Data.List (sort, foldl')
@@ -31,7 +31,7 @@ datafile = "data/Day11.txt"
 
 parser :: A.Parser Input
 parser = do
-    xs <- A.many1 parseMonkey
+    xs <- A.many parseMonkey
     let ys = M.fromList (map (\m -> (number m, m)) xs)
     let z = product (map test xs)
     pure $ Input { ms = ys, modulus = z }
@@ -39,15 +39,15 @@ parser = do
 parseMonkey :: A.Parser Monkey
 parseMonkey = do
     _ <- string "Monkey " A.<?> "Monkey"
-    n <- A.decimal A.<?> "Monkey Number"
+    n <- (fromIntegral <$> A.decimal) A.<?> "Monkey Number"
     _ <- string ":" A.<?> "Monkey Colon"
-    _ <- A.endOfLine A.<?> "Monkey EOL"
+    _ <- A.restOfLine A.<?> "Monkey EOL"
     _ <- string "  Starting items: " A.<?> "Starting items"
-    its <- A.many' $ do
-        i <- A.decimal A.<?> "Items Number"
+    its <- A.many $ do
+        i <- (fromIntegral <$> A.decimal) A.<?> "Items Number"
         _ <- A.option (T.pack " ") (string ", ") A.<?> "Items comma"
         pure i
-    _ <- A.endOfLine
+    _ <- A.restOfLine
     _ <- string "  Operation: new = " A.<?> "Operation new"
     op1 <- parseOper A.<?> "Oper 1"
     pop <- parseOperation A.<?> "Operation"
@@ -81,8 +81,8 @@ ignore p = do
 
 parseOper :: A.Parser (Either String Int)
 parseOper = do
-    x <- parseOld <|> (Right <$> A.decimal)
-    _ <- (ignore (string " ")) <|> A.endOfLine
+    x <- parseOld <|> (Right <$> (fromIntegral <$> A.decimal))
+    _ <- (ignore (string " ")) <|> (ignore A.restOfLine)
     pure x
 
 parseOld :: A.Parser (Either String Int)
@@ -106,14 +106,14 @@ parseMult = do
 parseTest :: A.Parser Int
 parseTest = do
     _ <- string "  Test: divisible by "
-    x <- A.decimal
-    _ <- A.endOfLine
+    x <- fromIntegral <$> A.decimal
+    _ <- A.restOfLine
     pure x
 
 parseThrow :: String -> A.Parser Int
 parseThrow s = do
     _ <- string ("    If " <> s <> ": throw to monkey ")
-    x <- A.decimal
+    x <- fromIntegral <$> A.decimal
     _ <- eol
     pure x
 

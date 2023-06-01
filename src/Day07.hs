@@ -1,10 +1,10 @@
 module Day07 (Input, datafile, parser, part1, part2) where
 
 import Control.Applicative ((<|>))
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import qualified Data.Map as M
 import Data.List ( sort )
-import ParserUtils ( eol, restOfLine, string )
+import ParserUtils ( eol, int, restOfLine, string )
 
 data Element = File String Int
              | Dir String
@@ -19,25 +19,26 @@ parser :: A.Parser Input
 parser = parseCd [] M.empty
 
 parseCd :: [String] -> Input -> A.Parser Input
-parseCd ds m = do
-    b <- A.atEnd
-    if b
-        then pure m
-        else do
-            _ <- string "$ cd "
-            x <- restOfLine
-            _ <- eol
-            if x == ".."
-                then parseCd (tail ds) m
-                else do
-                    xs <- parseLs (x <> concat ds)
-                    parseCd (x:ds) (M.insert (concat ds <> x) xs m)
+parseCd ds m = a <|> b
+  where
+    a = do
+        A.eof
+        pure m
+    b = do
+        _ <- string "$ cd "
+        x <- restOfLine
+        _ <- eol
+        if x == ".."
+            then parseCd (tail ds) m
+            else do
+                xs <- parseLs (x <> concat ds)
+                parseCd (x:ds) (M.insert (concat ds <> x) xs m)
 
 parseLs :: String -> A.Parser [Element]
 parseLs d = do
     _ <- string "$ ls"
     _ <- eol 
-    A.many' $ (parseDir d <|> parseFile)
+    A.many $ (parseDir d <|> parseFile)
 
 parseDir :: String -> A.Parser Element
 parseDir d = do
@@ -48,7 +49,7 @@ parseDir d = do
 
 parseFile :: A.Parser Element
 parseFile = do
-    x <- A.decimal 
+    x <- int
     _ <- A.char ' '
     y <- restOfLine
     _ <- eol

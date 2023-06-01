@@ -1,16 +1,15 @@
 module Day05 (Input(..), datafile, parser, part1, part2) where
 
 import Control.Applicative ((<|>))
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import Data.List (transpose)
 import Data.Maybe (catMaybes)
-import qualified Data.Text as T
 import qualified Data.IntMap as M
 
 data Instruction = Instruction
-    { numMoved :: Int
-    , from :: Int
-    , to :: Int
+    { numMoved :: Integer
+    , from :: Integer
+    , to :: Integer
     } deriving stock  (Show, Eq)
 
 data Input = Input 
@@ -24,24 +23,24 @@ datafile = "data/Day05.txt"
 parser :: A.Parser Input
 parser = do 
     xs <- parseStacks
-    _ <- parseStackNumbers
-    _ <- A.endOfLine
-    _ <- A.endOfLine
+    _ <- A.restOfLine --parseStackNumbers
+    _ <- A.restOfLine
+    _ <- A.restOfLine
     ys <- parseInstructions
     pure $ Input { stacks = buildMap (rotStacks xs), instructions = ys }
 
 parseStacks :: A.Parser [[Maybe Char]]
-parseStacks = A.many1 $ parseRow
+parseStacks = A.many $ parseRow
 
-parseStackNumbers :: A.Parser ()
-parseStackNumbers = do
-    _ <- A.takeTill (\c -> c == '\n')
-    pure ()
+-- parseStackNumbers :: A.Parser ()
+-- parseStackNumbers = do
+--     _ <- A.manyTill (\c -> c == '\n')
+--     pure ()
 
 parseRow :: A.Parser [Maybe Char]
 parseRow = do
-    xs <- A.many1 parseBox
-    _ <- A.endOfLine <|> A.endOfInput
+    xs <- A.many parseBox
+    _ <- A.restOfLine
     pure xs
 
 parseBox :: A.Parser (Maybe Char)
@@ -63,14 +62,14 @@ parseFullBox = do
     pure (Just x)
 
 parseInstructions :: A.Parser [Instruction]
-parseInstructions = A.many1 $ do
-    _ <- A.string (T.pack "move ")
+parseInstructions = A.many $ do
+    _ <- A.string "move "
     x <- A.decimal
-    _ <- A.string (T.pack " from ")
+    _ <- A.string " from "
     y <- A.decimal
-    _ <- A.string (T.pack " to ")
+    _ <- A.string " to "
     z <- A.decimal
-    _ <- A.endOfLine <|> A.endOfInput
+    _ <- A.restOfLine
     pure $ Instruction { numMoved = x, from = y, to = z}
 
 rotStacks :: [[Maybe Char]] -> [[Char]]
@@ -99,9 +98,9 @@ moveStacks ss []     =  ss
 moveStacks ss (x:xs) = moveStacks (doInstr x ss) xs    
 
 doInstr :: Instruction -> M.IntMap String -> M.IntMap String
-doInstr (Instruction {numMoved = c, from = f, to = t}) xs = M.adjust (\x -> ms <> x) t $ M.adjust (drop c) f xs
+doInstr (Instruction {numMoved = c, from = f, to = t}) xs = M.adjust (\x -> ms <> x) (fromIntegral t) $ M.adjust (drop (fromIntegral c)) (fromIntegral f) xs
     where 
-        ms = reverse $ take c (xs M.! f)
+        ms = reverse $ take (fromIntegral c) (xs M.! (fromIntegral f))
 
 part2 :: Input -> String
 part2 xs = concat $ map (take 1) $ M.elems ss
@@ -114,6 +113,6 @@ moveStacks2 ss (x:xs) = moveStacks2 (doInstr2 x ss) xs
     
 
 doInstr2 :: Instruction -> M.IntMap String -> M.IntMap String
-doInstr2 (Instruction {numMoved = c, from = f, to = t}) xs = M.adjust (\x -> ms <> x) t $ M.adjust (drop c) f xs
+doInstr2 (Instruction {numMoved = c, from = f, to = t}) xs = M.adjust (\x -> ms <> x) (fromIntegral t) $ M.adjust (drop (fromIntegral c)) (fromIntegral f) xs
     where
-        ms = take c (xs M.! f)
+        ms = take (fromIntegral c) (xs M.! (fromIntegral f))

@@ -1,7 +1,7 @@
 module Day09 (Input, datafile, parser, part1, part2) where
 
 import Control.Applicative ((<|>))
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import qualified Data.Set as S
 import ParserUtils ( eol )
 
@@ -13,10 +13,10 @@ datafile = "data/Day09.txt"
 
 parser :: A.Parser Input
 parser = do
-    xs <- A.many1 $ do
+    xs <- A.many $ do
         x <- parseDirn
         _ <- A.char ' '
-        y <- A.decimal
+        y <- fromIntegral <$> A.decimal
         _ <- eol
         pure (x, y)
     pure $ concatMap (\(d,r) -> replicate r d) xs

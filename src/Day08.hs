@@ -1,6 +1,6 @@
 module Day08 (Input, datafile, parser, part1, part2) where
 
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import qualified Data.Matrix as M
 import ParserUtils ( digitLine )
 
@@ -11,7 +11,7 @@ datafile = "data/Day08.txt"
 
 parser :: A.Parser Input
 parser = do
-    xs <- A.many1 digitLine
+    xs <- A.many digitLine
     let nRows = length xs
     let nCols = length (head xs)
     pure $ M.fromList nRows nCols (concat xs)

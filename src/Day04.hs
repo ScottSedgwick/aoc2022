@@ -1,16 +1,15 @@
 module Day04 (Input, datafile, parser, part1, part2) where
 
-import Control.Applicative ((<|>))
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 
-type InputPart = ((Int, Int), (Int, Int))
+type InputPart = ((Integer, Integer), (Integer, Integer))
 type Input = [InputPart]
 
 datafile :: FilePath
 datafile = "data/Day04.txt"
 
 parser :: A.Parser Input
-parser = A.many1 $ do
+parser = A.many $ do
     a <- A.decimal
     _ <- A.char '-'
     b <- A.decimal
@@ -18,7 +17,7 @@ parser = A.many1 $ do
     c <- A.decimal
     _ <- A.char '-'
     d <- A.decimal
-    _ <- A.endOfLine <|> A.endOfInput
+    _ <- A.restOfLine
     pure ((a,b), (c,d))
 
 

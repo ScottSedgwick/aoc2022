@@ -1,12 +1,8 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Day14 (Input, datafile, parser, part1, part2) where
 
-import Control.Applicative ((<|>))
-import qualified Data.Attoparsec.Text as A
+import qualified Text.Trifecta as A
 import qualified Data.Matrix as M
-import Data.List ( findIndex, intercalate, sort )
 import ParserUtils 
-import Debug.Trace
 
 data ARS = Air | Sand | Rock deriving stock (Eq)
 instance Show ARS where
@@ -27,7 +23,7 @@ datafile = "data/Day14.txt"
 
 parser :: A.Parser Input
 parser = do
-    xs <- A.many1 parseLine -- [[(Int, Int)]]
+    xs <- A.many parseLine -- [[(Int, Int)]]
     let y2 = 1 + (maximum $ map snd $ concat xs)
     let x1 = minimum (500 - y2 - 1 : map fst (concat xs))
     let x2 = maximum (500 + y2 + 1 : map fst (concat xs))
@@ -53,10 +49,10 @@ getElem minx (x,y) m = M.getElem (y + 1) (x - minx + 1) m
 
 parseLine :: A.Parser [(Int, Int)]
 parseLine = do
-    xs <- A.many1 $ do
-        x <- A.decimal
+    xs <- A.many $ do
+        x <- fromIntegral <$> A.decimal
         _ <- A.char ','
-        y <- A.decimal
+        y <- fromIntegral <$> A.decimal
         _ <- A.option " " (string " -> ")
         pure (x,y)
     _ <- eol
